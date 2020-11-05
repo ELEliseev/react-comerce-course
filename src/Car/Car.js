@@ -1,10 +1,56 @@
-export default (props) => {
-    return (
-        <div style={{ border: '1px solid #ccc', marginBottom: '10px', display: 'block', padding: "10px" }}>
-            <h2>Car name:{props.name}</h2>
-            <p>Year: <strong>{props.year}</strong></p>
-            <input type="text" onChange={props.onChangeName} value={props.name} />
-            <button style={{ color: "red", fontSize: "20px" }} onClick={props.onDelete}>-</button>
-        </div>
-    )
+import React, { Component } from 'react'
+import classes from './Car.module.css'
+import withClass from '../hoc/withClass'
+import PropTypes from 'prop-types'
+
+class Car extends Component {
+
+    constructor(props) {
+        super(props)
+        this.inputRef = React.createRef()
+    }
+    componentDidMount() {
+        if (this.props.index === 1) {
+            this.inputRef.current.focus()
+        }
+    }
+    render() {
+
+        const inputClasses = [classes.input]
+
+        if (this.props.name !== '') {
+            inputClasses.push(classes.green)
+        }
+        else {
+            inputClasses.push(classes.red)
+        }
+
+        if (this.props.name.length > 4) {
+            inputClasses.push(classes.bold)
+        }
+
+        return (
+            <React.Fragment >
+                <h2>Car name:{this.props.name}</h2>
+                <p>Year: <strong>{this.props.year}</strong></p>
+                <input
+                    ref={this.inputRef}
+                    type="text"
+                    onChange={this.props.onChangeName}
+                    value={this.props.name}
+                    className={inputClasses.join(' ')}
+                />
+                <button onClick={this.props.onDelete}>-</button>
+            </React.Fragment >
+        )
+    }
 }
+
+Car.propTypes = {
+    name: PropTypes.string,
+    year: PropTypes.string,
+    onChangeName: PropTypes.func,
+    onDelete: PropTypes.func,
+    index: PropTypes.number
+}
+export default withClass(Car, classes.Car)
